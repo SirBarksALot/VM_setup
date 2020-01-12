@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import pwd
 import distro 
 from Crypto.PublicKey import RSA
 
@@ -36,6 +37,9 @@ def create_ssh_key_pair(user_name, key_name):
     if os.path.exists(keys_path['priv']) or os.path.exists(keys_path['public']):
         print(f'Keys already exist!')
     else:
+        if not os.path.exists(keys_path['.ssh/']):
+            os.makedirs(keys_path['.ssh/'])
+
         for key, value in keys_path.items():
             if key == 'priv':
                 print(f'Generating new priv key: {value}')
@@ -48,8 +52,13 @@ def create_ssh_key_pair(user_name, key_name):
                 with open(value, 'wb+') as f:
                     f.write(pub_key.exportKey('OpenSSH'))
             else:
-                print('Something went wrong!')
+                pass
 
 
-create_user('ansible', 'Fr!(wqQ4#342Sd')
-create_ssh_key_pair('ansible', 'ansible_key')
+try:
+    pwd.getpwnam('ansible')
+    print('User ansible exists!')
+except KeyError:
+    print('User ansible does not exist.')
+    if create_user('ansible', 'Fr!wqQ4#342Sd'):
+        create_ssh_key_pair('ansible', 'ansible_key')
