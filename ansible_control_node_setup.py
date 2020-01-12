@@ -37,9 +37,20 @@ def create_ssh_key_pair(user_name, key_name):
                 print('Something went wrong!')
 
 
-def create_user(name, password):
-    pass
+def create_user(user_name, password):
+    os_info = check_os()
+    if os_info[1] == 'debian' or os_info[1] == 'ubuntu':
+        sudoers_group = 'sudo'
+    elif os_info[1] == 'centos':
+        sudoers_group == 'wheel'
+    else:
+        print('System distribution not supported!')
+        return
+
+    os.system(f'sudo useradd {user_name} -m -p {password}')
+    os.system(f'sudo usermod -aG {sudoers_group} {user_name}')
+    print(f'Created user {user_name} and added him to {sudoers_group} group!')
 
 
-check_os()
-create_ssh_key_pair('filiplez18', 'my_key')
+create_user('ansible', 'Fr!(wqQ4#342Sd')
+create_ssh_key_pair('ansible', 'ansible_key')
