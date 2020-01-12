@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os
-import crypt
 import distro 
 from Crypto.PublicKey import RSA
 
