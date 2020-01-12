@@ -15,13 +15,18 @@ def check_os():
 
 def create_user(user_name, password):
     os_info = check_os()
-    if os_info[1] == 'debian' or os_info[1] == 'ubuntu':
+    if os_info[0] == 'debian' or os_info[0] == 'ubuntu':
         sudoers_group = 'sudo'
-    elif os_info[1] == 'centos':
+    elif os_info[0] == 'centos':
         sudoers_group == 'wheel'
     else:
         print('System distribution not supported!')
-        return
+        return False
+
+    os.system(f'sudo useradd {user_name} -m -p {password}')
+    os.system(f'sudo usermod -aG {sudoers_group} {user_name}')
+    print(f'Created user {user_name} and added him to {sudoers_group} group!')
+    return True
 
     os.system(f'sudo useradd {user_name} -m -p {password}')
     os.system(f'sudo usermod -aG {sudoers_group} {user_name}')
@@ -30,6 +35,7 @@ def create_user(user_name, password):
     
 def create_ssh_key_pair(user_name, key_name):
     keys_path = {
+            '.ssh/': f'/home/{user_name}/.ssh',
             'priv': f'/home/{user_name}/.ssh/{key_name}',
             'public': f'/home/{user_name}/.ssh/{key_name}.pub',
             }
